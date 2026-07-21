@@ -13,11 +13,17 @@ export function AdminUnlock({ onUnlocked }: { onUnlocked: () => void }) {
     event.preventDefault()
     setBusy(true)
     setError('')
-    const key = new FormData(event.currentTarget).get('key')
-    const result = await unlockAdmin(String(key || ''))
-    setBusy(false)
-    if (result.ok) onUnlocked()
-    else setError(result.message)
+    try {
+      const key = new FormData(event.currentTarget).get('key')
+      const result = await unlockAdmin(String(key || ''))
+      if (result.ok) onUnlocked()
+      else setError(result.message)
+    } catch (err) {
+      console.error('[v0] Submit error:', err)
+      setError('An unexpected error occurred')
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (

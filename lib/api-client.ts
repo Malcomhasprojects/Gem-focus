@@ -38,9 +38,26 @@ export async function deleteEvent(id: number): Promise<void> {
 }
 
 export async function unlockAdmin(key: string): Promise<{ ok: boolean; message: string }> {
-  const form = new FormData()
-  form.set('key', key)
-  return parse(await fetch(endpoint('/admin/unlock'), { method: 'POST', body: form, credentials: 'include' }))
+  try {
+    const form = new FormData()
+    form.set('key', key)
+    const res = await fetch(endpoint('/admin/unlock'), { method: 'POST', body: form, credentials: 'include' })
+    const data = await res.json().catch(() => ({}))
+    
+    if (!res.ok) {
+      return {
+        ok: false,
+        message: (data as { message?: string }).message ?? 'Authentication failed',
+      }
+    }
+    return data as { ok: boolean; message: string }
+  } catch (error) {
+    console.error('[v0] Unlock error:', error)
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'An error occurred',
+    }
+  }
 }
 
 export async function logoutAdmin(): Promise<void> {
