@@ -4,7 +4,10 @@ import mysql from 'mysql2/promise'
 import * as schema from './schema'
 
 function getDatabaseUrl() {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL
+  const url = process.env.DATABASE_URL
+  // Only use DATABASE_URL if it's a valid connection string (contains protocol or @)
+  if (url && (url.includes('://') || url.includes('@'))) return url
+  
   const host = process.env.DB_HOST
   const user = process.env.DB_USER
   const password = process.env.DB_PASSWORD ?? ''
