@@ -1,7 +1,7 @@
 import type { CampaignEvent, Dashboard, Issue } from '@/lib/types'
 
 const base = process.env.NEXT_PUBLIC_API_URL ?? '/api'
-const ext = process.env.NEXT_PUBLIC_API_EXT ?? (process.env.NODE_ENV === 'development' ? '' : '.php')
+const ext = process.env.NEXT_PUBLIC_API_EXT ?? ''
 
 function endpoint(path: string) {
   return `${base}${path}${ext}`
