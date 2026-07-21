@@ -8,6 +8,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: 'Incorrect access key.' })
   }
 
-  await adminCookie(process.env.ADMIN_ACCESS_KEY!)
+  await adminCookie(key)
   return NextResponse.json({ ok: true, message: 'Unlocked' })
 }
