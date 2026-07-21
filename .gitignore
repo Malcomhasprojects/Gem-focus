@@ -12,4 +12,8 @@ __v0_jsx-dev-runtime.ts
 # Common ignores
 node_modules
 .next/
+out/
+dist/
+.deploy-backup/
+deploy/api/config.local.php
 .DS_Store

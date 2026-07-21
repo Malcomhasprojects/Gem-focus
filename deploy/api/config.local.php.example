@@ -1,0 +1,13 @@
+<?php
+declare(strict_types=1);
+
+// Copy to config.local.php on InfinityFree (same folder as config.php).
+// Get values from: InfinityFree panel → MySQL Databases.
+
+return [
+    'db_host' => 'sql123.infinityfree.com',
+    'db_user' => 'if0_12345678',
+    'db_pass' => 'your_mysql_password',
+    'db_name' => 'if0_12345678_gemfocus',
+    'admin_key' => 'change-me-to-a-strong-key',
+];

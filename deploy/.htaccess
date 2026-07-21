@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# PHP API (InfinityFree)
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^ - [L]
+
+# Static assets and HTML from Next export
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Client-side routes (trailingSlash export)
+RewriteRule ^(.*)/$ /$1/index.html [L]

@@ -1,7 +1,9 @@
 import { config } from 'dotenv'
 import mysql from 'mysql2/promise'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-config({ path: new URL('../.env.local', import.meta.url).pathname })
+config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '.env.local') })
 
 function getPoolConfig() {
   if (process.env.DATABASE_URL) {
