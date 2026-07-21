@@ -1,12 +1,11 @@
 'use client'
+
 import { useState } from 'react'
 import { EyeOff, KeyRound } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { unlockAdmin } from '@/app/actions/admin'
+import { unlockAdmin } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 
-export function AdminUnlock() {
-  const router = useRouter()
+export function AdminUnlock({ onUnlocked }: { onUnlocked: () => void }) {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -14,9 +13,10 @@ export function AdminUnlock() {
     event.preventDefault()
     setBusy(true)
     setError('')
-    const result = await unlockAdmin(new FormData(event.currentTarget))
+    const key = new FormData(event.currentTarget).get('key')
+    const result = await unlockAdmin(String(key || ''))
     setBusy(false)
-    if (result.ok) router.refresh()
+    if (result.ok) onUnlocked()
     else setError(result.message)
   }
 

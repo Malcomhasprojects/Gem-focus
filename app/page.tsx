@@ -1,8 +1,5 @@
-import Link from 'next/link'
-import { ArrowRight, BarChart3, ShieldCheck } from 'lucide-react'
-import { SiteHeader } from '@/components/site-header'
-import { Button } from '@/components/ui/button'
-import { getDashboard } from '@/lib/data'
-export const dynamic='force-dynamic'
-export default async function Home(){const d=await getDashboard();const actioned=d.total?Math.round(((d.resolved+d.inProgress)/d.total)*100):0;return <><SiteHeader/><main className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-6xl gap-10 px-5 py-10 md:grid-cols-[1.35fr_.85fr] md:items-center md:py-16"><section className="flex flex-col items-start gap-7"><p className="rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[.18em] text-primary">Listening across Gem constituency</p><h1 className="max-w-3xl text-balance font-serif text-5xl font-semibold leading-[.98] tracking-tight sm:text-7xl lg:text-8xl">Every issue heard. Every action visible.</h1><p className="max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground md:text-xl">A direct channel between Gem residents and the candidate for MCA campaign. Report community concerns, see emerging priorities, and follow collective progress.</p><div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row"><Button nativeButton={false} render={<Link href="/report" />} size="lg">Report an issue<ArrowRight data-icon="inline-end"/></Button><Button nativeButton={false} render={<Link href="/transparency" />} size="lg" variant="outline">View public dashboard<BarChart3 data-icon="inline-end"/></Button></div><p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-5 text-primary"/>Personal details are never shown publicly.</p></section><aside className="rounded-[2rem] bg-secondary p-7 text-secondary-foreground md:p-10"><p className="text-lg opacity-70">Community pulse</p><div className="my-8 grid grid-cols-2 overflow-hidden rounded-3xl border border-secondary-foreground/15"><Stat value={d.total} label="people heard"/><Stat value={`${actioned}%`} label="actioned"/><Stat value={d.wards} label="wards covered"/><Stat value={d.resolved} label="resolved"/></div><p className="text-sm leading-relaxed opacity-65">Campaign-reported figures updated live. This is not an IEBC or government platform.</p></aside></main></>}
-function Stat({value,label}:{value:number|string,label:string}){return <div className="border-b border-r border-secondary-foreground/15 p-6"><strong className="block font-serif text-4xl">{value}</strong><span className="opacity-70">{label}</span></div>}
+import { HomeContent } from '@/components/home-content'
+
+export default function Home() {
+  return <HomeContent />
+}

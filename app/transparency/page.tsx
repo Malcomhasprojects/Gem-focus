@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
-import { CheckCircle2, Clock3, FileText, Users } from 'lucide-react'
-import { SiteHeader } from '@/components/site-header'
-import { DashboardCharts } from '@/components/dashboard-charts'
-import { getDashboard } from '@/lib/data'
-export const metadata:Metadata={title:'Public transparency'};export const dynamic='force-dynamic'
-export default async function Transparency(){const d=await getDashboard();return <><SiteHeader/><main className="mx-auto max-w-6xl px-5 py-10 md:py-16"><header className="mb-8"><p className="text-xs font-bold uppercase tracking-[.18em] text-primary">Public transparency</p><h1 className="mt-3 font-serif text-4xl sm:text-5xl">Community issues dashboard</h1><p className="mt-3 text-muted-foreground">Aggregated campaign data showing what Gem residents are raising and how follow-up is progressing.</p></header><div className="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Metric icon={FileText} label="People heard" value={d.total}/><Metric icon={CheckCircle2} label="Resolved" value={d.resolved}/><Metric icon={Clock3} label="In progress" value={d.inProgress}/><Metric icon={Users} label="Wards covered" value={d.wards}/></div><DashboardCharts issues={d.rows}/><section className="mt-5 rounded-2xl border bg-card p-5"><h2 className="font-serif text-2xl">Category breakdown</h2><div className="mt-5 flex flex-col gap-4">{Object.entries(d.rows.reduce<Record<string,number>>((a,x)=>{a[x.category]=(a[x.category]||0)+x.peopleCount;return a},{})).sort((a,b)=>b[1]-a[1]).map(([name,value])=><div key={name}><div className="mb-2 flex justify-between text-sm"><span>{name}</span><strong>{value}</strong></div><div className="h-2 rounded-full bg-muted"><div className="h-full rounded-full bg-primary" style={{width:`${d.total?value/d.total*100:0}%`}}/></div></div>)}</div></section></main></>}
-function Metric({icon:Icon,label,value}:{icon:typeof FileText,label:string,value:number}){return <section className="rounded-2xl border bg-card p-5"><div className="flex items-center justify-between text-sm text-muted-foreground"><span>{label}</span><Icon className="size-4 text-primary"/></div><strong className="mt-3 block font-serif text-4xl">{value}</strong></section>}
+import { TransparencyContent } from '@/components/transparency-content'
+
+export const metadata: Metadata = { title: 'Public transparency' }
+
+export default function Transparency() {
+  return <TransparencyContent />
+}

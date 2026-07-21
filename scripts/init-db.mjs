@@ -1,53 +1,64 @@
 import { config } from 'dotenv'
-import pg from 'pg'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import mysql from 'mysql2/promise'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
 config({ path: new URL('../.env.local', import.meta.url).pathname })
+
+function getPoolConfig() {
+  if (process.env.DATABASE_URL) {
+    return process.env.DATABASE_URL
+  }
+  return {
+    host: process.env.DB_HOST ?? '127.0.0.1',
+    user: process.env.DB_USER ?? 'root',
+    password: process.env.DB_PASSWORD ?? '',
+    database: process.env.DB_NAME ?? 'gem_focus',
+  }
+}
 
 const sql = `
 CREATE TABLE IF NOT EXISTS issues (
-  id serial PRIMARY KEY,
-  title text NOT NULL,
-  description text NOT NULL,
-  ward text NOT NULL,
-  station text,
-  category text NOT NULL,
-  priority text NOT NULL DEFAULT 'medium',
-  status text NOT NULL DEFAULT 'pending',
-  people_count integer NOT NULL DEFAULT 1,
-  reporter_name text,
-  reporter_phone text,
-  admin_notes text,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  ward VARCHAR(100) NOT NULL,
+  station VARCHAR(200) NULL,
+  category VARCHAR(100) NOT NULL,
+  priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  people_count INT NOT NULL DEFAULT 1,
+  reporter_name VARCHAR(200) NULL,
+  reporter_phone VARCHAR(50) NULL,
+  admin_notes TEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS campaign_events (
-  id serial PRIMARY KEY,
-  title text NOT NULL,
-  ward text NOT NULL,
-  venue text NOT NULL,
-  event_date date NOT NULL,
-  event_time time NOT NULL,
-  objective text NOT NULL,
-  status text NOT NULL DEFAULT 'scheduled',
-  attendance integer,
-  expected_attendance integer,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  ward VARCHAR(100) NOT NULL,
+  venue VARCHAR(300) NOT NULL,
+  event_date DATE NOT NULL,
+  event_time TIME NOT NULL,
+  objective TEXT NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'scheduled',
+  attendance INT NULL,
+  expected_attendance INT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS campaign_metrics (
-  id serial PRIMARY KEY,
-  metric_key text NOT NULL UNIQUE,
-  metric_value integer NOT NULL DEFAULT 0,
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  metric_key VARCHAR(100) NOT NULL UNIQUE,
+  metric_value INT NOT NULL DEFAULT 0,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 `
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL })
-await pool.query(sql)
-await pool.end()
-console.log('Database tables ready.')
+const connection = await mysql.createConnection(getPoolConfig())
+for (const statement of sql.split(';').map(s => s.trim()).filter(Boolean)) {
+  await connection.query(statement)
+}
+await connection.end()
+console.log('MySQL tables ready.')

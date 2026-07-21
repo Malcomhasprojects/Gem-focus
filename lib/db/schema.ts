@@ -1,35 +1,42 @@
-import { date, integer, pgTable, serial, text, time, timestamp } from 'drizzle-orm/pg-core'
+import { date, int, mysqlTable, text, time, timestamp, varchar } from 'drizzle-orm/mysql-core'
 
-export const issues = pgTable('issues', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
+export const issues = mysqlTable('issues', {
+  id: int('id').primaryKey().autoincrement(),
+  title: varchar('title', { length: 500 }).notNull(),
   description: text('description').notNull(),
-  ward: text('ward').notNull(),
-  station: text('station'),
-  category: text('category').notNull(),
-  priority: text('priority').notNull().default('medium'),
-  status: text('status').notNull().default('pending'),
-  peopleCount: integer('people_count').notNull().default(1),
-  reporterName: text('reporter_name'),
-  reporterPhone: text('reporter_phone'),
+  ward: varchar('ward', { length: 100 }).notNull(),
+  station: varchar('station', { length: 200 }),
+  category: varchar('category', { length: 100 }).notNull(),
+  priority: varchar('priority', { length: 20 }).notNull().default('medium'),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  peopleCount: int('people_count').notNull().default(1),
+  reporterName: varchar('reporter_name', { length: 200 }),
+  reporterPhone: varchar('reporter_phone', { length: 50 }),
   adminNotes: text('admin_notes'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 })
 
-export const campaignEvents = pgTable('campaign_events', {
-  id: serial('id').primaryKey(), title: text('title').notNull(), ward: text('ward').notNull(),
-  venue: text('venue').notNull(), eventDate: date('event_date').notNull(), eventTime: time('event_time').notNull(),
-  objective: text('objective').notNull(), status: text('status').notNull().default('scheduled'),
-  attendance: integer('attendance'), expectedAttendance: integer('expected_attendance'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+export const campaignEvents = mysqlTable('campaign_events', {
+  id: int('id').primaryKey().autoincrement(),
+  title: varchar('title', { length: 500 }).notNull(),
+  ward: varchar('ward', { length: 100 }).notNull(),
+  venue: varchar('venue', { length: 300 }).notNull(),
+  eventDate: date('event_date').notNull(),
+  eventTime: time('event_time').notNull(),
+  objective: text('objective').notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('scheduled'),
+  attendance: int('attendance'),
+  expectedAttendance: int('expected_attendance'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 })
 
-export const campaignMetrics = pgTable('campaign_metrics', {
-  id: serial('id').primaryKey(), metricKey: text('metric_key').notNull().unique(),
-  metricValue: integer('metric_value').notNull().default(0),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+export const campaignMetrics = mysqlTable('campaign_metrics', {
+  id: int('id').primaryKey().autoincrement(),
+  metricKey: varchar('metric_key', { length: 100 }).notNull().unique(),
+  metricValue: int('metric_value').notNull().default(0),
+  updatedAt: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
 })
 
 export type Issue = typeof issues.$inferSelect

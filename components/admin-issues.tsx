@@ -1,5 +1,5 @@
 'use client'
-import type { Issue } from '@/lib/db/schema'
+import type { Issue } from '@/lib/types'
 import { STATUSES } from '@/lib/constants'
 export function AdminIssues({issues}:{issues:Issue[]}){
   return (
