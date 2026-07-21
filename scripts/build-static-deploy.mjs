@@ -95,14 +95,14 @@ fs.copyFileSync(path.join(root, 'deploy', '.htaccess'), path.join(distDir, '.hta
 fs.copyFileSync(path.join(root, 'deploy', 'schema.sql'), path.join(distDir, 'schema.sql'))
 
 const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, ADMIN_ACCESS_KEY } = process.env
-const remoteDb =
-  DB_HOST &&
+const hasRemoteCreds =
   DB_USER &&
   DB_NAME &&
+  DB_HOST &&
   !/^127\.0\.0\.1$/i.test(DB_HOST) &&
   !/^localhost$/i.test(DB_HOST)
 
-if (remoteDb) {
+if (hasRemoteCreds) {
   const php = `<?php
 declare(strict_types=1);
 
@@ -115,7 +115,11 @@ return [
 ];
 `
   fs.writeFileSync(path.join(distDir, 'api', 'config.local.php'), php, 'utf8')
-  console.log('Wrote api/config.local.php from .env.local MySQL settings.')
+  if (/XXX/i.test(DB_HOST)) {
+    console.log('Wrote api/config.local.php (MySQL host placeholder — run /api/discover-db.php after upload).')
+  } else {
+    console.log('Wrote api/config.local.php from .env.local MySQL settings.')
+  }
 }
 
 console.log('')
