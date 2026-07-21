@@ -17,3 +17,4 @@ dist/
 .deploy-backup/
 deploy/api/config.local.php
 .DS_Store
+.env*
